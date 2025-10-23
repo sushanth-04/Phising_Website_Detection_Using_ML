@@ -1,53 +1,112 @@
-# PHISHING-WEBSITE-DETECTION-USING-MACHINE-LEARNING
-# Project Overview
-This project aims to detect phishing websites using machine learning techniques. The goal is to build a model that identifies phishing websites based on significant URL features and develop a user interface for real-time legitimacy checking.
+# Phishing Website Detection Using Machine Learning
 
-## Problem Statement
-Current systems train models based solely on the URL and cannot accommodate all website names, requiring enhancements in accuracy. Additionally, existing systems lack a specific user interface for easy access and usage.
+This project is a web application that utilizes a machine learning model to detect phishing websites. It helps users to identify potentially malicious websites before they visit them, thus enhancing their security.
 
-## Solution
-We developed a machine learning model that identifies phishing websites based on significant URL features and created a web interface for users to input URLs and check their legitimacy. If a URL is identified as a phishing website, the interface will display its legitimate counterpart and store the URL for further analysis.
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [How to Run](#how-to-run)
+- [Project Structure](#project-structure)
+- [Model](#model)
+- [Dataset](#dataset)
+
+## Tech Stack
+
+The application is built using the following technologies:
+
+- **Backend:**
+    - Python
+    - Flask
+    - Scikit-learn
+    - Pandas
+    - Numpy
+    - BeautifulSoup4
+    - python-whois
+    - gunicorn
+- **Frontend:**
+    - HTML
+    - CSS
+    - JavaScript
+
+## Installation
+
+To set up the project locally, follow these steps:
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/phishing-website-detection.git
+    cd phishing-website-detection
+    ```
+
+2.  **Create a virtual environment:**
+    ```bash
+    python -m venv venv
+    ```
+
+3.  **Activate the virtual environment:**
+    - On Windows:
+        ```bash
+        venv\Scripts\activate
+        ```
+    - On macOS/Linux:
+        ```bash
+        source venv/bin/activate
+        ```
+
+4.  **Install the dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+## How to Run
+
+After installing the dependencies, you can run the application with the following command:
+
+```bash
+python app.py
+```
+
+The application will start on `http://127.0.0.1:5000/`. Open this URL in your web browser to use the application.
+
+## Project Structure
+
+The project has the following structure:
+
+```
+.
+├── app.py                  # Main Flask application
+├── model.pkl               # Pre-trained machine learning model
+├── feature.py              # Feature extraction from URL
+├── requirements.txt        # Python dependencies
+├── templates/              # HTML templates for the frontend
+│   ├── index.html
+│   └── result.html
+├── static/                 # Static files (CSS, JS, images)
+│   ├── css/
+│   ├── js/
+│   └── img/
+├── phishing.csv            # Dataset used for training the model
+├── Accuracy.txt            # Accuracy of the trained model
+└── README.md               # This file
+```
+
+- **`app.py`**: The main entry point of the Flask application. It handles the web routes and the prediction logic.
+- **`model.pkl`**: A pre-trained Gradient Boosting Classifier model that is used to make predictions.
+- **`feature.py`**: Contains the `FeatureExtraction` class which is used to extract features from a given URL.
+- **`requirements.txt`**: A list of all the Python libraries required to run the project.
+- **`templates/`**: This directory contains the HTML files that are rendered to the user.
+- **`static/`**: This directory contains all the static files like CSS, JavaScript, and images.
+- **`phishing.csv`**: The dataset containing phishing and legitimate URLs used to train the model.
+- **`Accuracy.txt`**: A text file containing the training and testing accuracy of the model.
+
+## Model
+
+The machine learning model used in this project is a **Gradient Boosting Classifier**. The model is trained on the `phishing.csv` dataset to classify URLs as either phishing or legitimate.
+
+- **Training Accuracy:** 98.9%
+- **Test Accuracy:** 97.4%
 
 ## Dataset
-- **Name:** Phishing.csv
-- **Description:** Contains a collection of URLs for 11,000+ websites, each with 30 parameters and a class label identifying it as a phishing website (1) or not (-1).
 
-## Achievements
-- Achieved 97.4% accuracy with individual machine learning models.
-- Improved accuracy to 97.9% using ensemble techniques (stacking random forest and gradient boosting).
-- Developed a mapping dataset that relates phishing URLs to legitimate URLs.
-
-## Tools and Technologies
-- **Programming Languages:** Python
-- **Libraries and Frameworks:** Scikit-learn, Pandas, NumPy
-- **Development Environment:** Jupyter Notebook, PyCharm, VSCode
-- **Machine Learning Techniques:** Random Forest, Gradient Boosting, Ensemble Techniques (Stacking)
-- **Web Development:** Flask (or Django), HTML, CSS, JavaScript
-- **Database:** SQLite (or MySQL)
-
-## Features
-- **Phishing Detection:** Classifies URLs as legitimate or phishing based on significant URL features.
-- **User Interface:** Allows users to input URLs and check their legitimacy in real-time.
-- **URL Mapping:** Displays legitimate URLs for identified phishing websites.
-- **Data Storage:** Stores user-submitted URLs for analysis and continuous improvement of the detection system.
-
-## Usage
-**Installation:**
-1. Clone the repository.
-2. Install the required Python libraries using `pip install -r requirements.txt`.
-
-**Running the Application:**
-1. Start the Flask server by running `flask run`.
-2. Open your web browser and navigate to `http://localhost:5000` to access the user interface.
-
-**Input a URL:**
-1. Enter a URL in the input field and submit.
-2. The application will display whether the URL is legitimate or a phishing website.
-3. If the URL is identified as phishing, it will also display the corresponding legitimate URL.
-
-## Future Work
-- Enhance the model's accuracy by incorporating more sophisticated features and techniques.
-- Expand the mapping dataset to cover a wider range of phishing URLs.
-- Improve the user interface for better usability and user experience.
-
-"# Phising_Website_Detection_Using_ML" 
+The dataset used to train the model is `phishing.csv`. It contains a collection of URLs, each labeled as either a phishing or a legitimate website.
