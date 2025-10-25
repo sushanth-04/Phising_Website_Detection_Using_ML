@@ -109,9 +109,9 @@ def posts():
         y_pro_non_phishing = gbc.predict_proba(x)[0, 1]
 
         prediction = (
-            "It is safe to go."
+            "Safe"
             if y_pred == 0
-            else "The website is detected as phishing and not safe to go."
+            else "Unsafe"
         )
 
         # Store the phishing website in a file if detected
@@ -133,6 +133,16 @@ def posts():
                                legitimate_suggestion=legitimate_suggestion)
 
     return render_template("result.html", xx=-1)
+
+@app.route('/clear_predictions')
+def clear_predictions():
+    """Clear all predictions from the database"""
+    try:
+        Prediction.query.delete()
+        db.session.commit()
+        return "All predictions cleared successfully!"
+    except Exception as e:
+        return f"Error clearing predictions: {str(e)}"
 
 @app.route('/all_predictions')
 def all_predictions():

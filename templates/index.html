@@ -1,195 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <title>URL</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
-
-    <!-- Favicon -->
-    <link href="../static/img/favicon.ico" rel="icon">
-
-    <!-- Google Web Fonts -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detection - URL Prediction</title>
+    <meta name="description" content="Advanced phishing website detection using machine learning">
+    
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Libraries Stylesheet -->
-    <link href="../static/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="../static/lib/animate/animate.min.css" rel="stylesheet">
-
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Template Stylesheet -->
-    <link href="../static/css/style.css" rel="stylesheet">
-	   
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Modern CSS -->
+    <link href="../static/css/modern.css" rel="stylesheet">
+    
+    <style>
+        body {
+            padding-top: 80px;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #2d1b69 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%236366f1" stop-opacity="0.1"/><stop offset="100%" stop-color="%236366f1" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/></svg>');
+            opacity: 0.5;
+        }
+        
+        .prediction-card {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .url-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            font-size: 1.1rem;
+            color: white;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .url-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .url-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .check-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 1rem;
+            padding: 1rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .check-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .check-btn:hover::before {
+            left: 100%;
+        }
+        
+        .check-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.3);
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .floating-element:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+        
+        .floating-element:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-title p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
 </head>
-
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner"></div>
-    </div>
-    <!-- Spinner End -->
-
-
-    <!-- Topbar Start -->
-   
-    <!-- Topbar End -->
-
-
-    <!-- Navbar Start -->
-    <div class="container-fluid position-relative p-0">
-        <nav class="navbar navbar-expand-lg navbar-dark px-5 py-3 py-lg-0">
-            <a href="{{url_for('first')}}" class="navbar-brand p-0">
-                <h1 class="m-0">Phishing Websites</h1>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="fa fa-bars"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto py-0">
-                    <!-- Add 'All Predictions' and 'Preview' buttons at the top -->
-                    <a href="{{ url_for('all_predictions') }}" class="nav-item nav-link">All Predictions</a>
-                    <a href="{{url_for('first')}}" class="nav-item nav-link">Home</a>
-                    <a href="{{url_for('index')}}" class="nav-item nav-link active">Prediction</a>
-                </div>
-            </div>
-        </nav>
-
-        <div class="container-fluid bg-primary py-5 bg-header" style="margin-bottom: 90px;">
-            <div class="row py-5">
-                <div class="col-12 pt-lg-5 mt-lg-5 text-center">
-                    <h1 class="display-4 text-white animated zoomIn">Prediction</h1>
-                    <i class="far fa-circle text-white px-2"></i>
-                    <a href="" class="h5 text-white">Phishing Websites</a>
-                </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="flex items-center justify-between">
+                <a href="{{url_for('first')}}" class="navbar-brand">
+                    <i class="fas fa-shield-alt" style="color: #6366f1; margin-right: 0.5rem;"></i>
+                    Phishing Detection
+                </a>
+                <ul class="navbar-nav">
+                    <li><a href="{{ url_for('all_predictions') }}" class="nav-link">All Predictions</a></li>
+                    <li><a href="{{url_for('first')}}" class="nav-link">Home</a></li>
+                    <li><a href="{{url_for('index')}}" class="nav-link active">Prediction</a></li>
+                </ul>
             </div>
         </div>
-    </div>
-    <!-- Navbar End -->
+    </nav>
 
-
-    <!-- Full Screen Search Start -->
-    <div class="modal fade" id="searchModal" tabindex="-1">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content" style="background: rgba(9, 30, 62, .7);">
-                <div class="modal-header border-0">
-                    <button type="button" class="btn bg-white btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body d-flex align-items-center justify-content-center">
-                    <div class="input-group" style="max-width: 600px;">
-                        <input type="text" class="form-control bg-transparent border-primary p-3" placeholder="Type search keyword">
-                        <button class="btn btn-primary px-4"><i class="bi bi-search"></i></button>
-                    </div>
-                </div>
-            </div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
         </div>
-    </div>
-    <!-- Full Screen Search End -->
-
-
-    <!-- Team Start -->
-    <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="section-title text-center position-relative pb-3 mb-5 mx-auto" style="max-width: 600px;">
-                <h5 class="fw-bold text-primary text-uppercase">PHISHING URL DETECTION</h5>
-                <h1 class="mb-0">URL Prediction</h1>
+        
+        <div class="container">
+            <div class="section-title animate-fadeInUp">
+                <h2>URL Prediction</h2>
+                <p>Enter a URL to check if it's safe or potentially malicious</p>
             </div>
             
-			 
- <body>
-    
-<div class=" container">
-    <div class="row">
-        <div class="form col-md" id="form1">
-             
-    
-            <br>
-          <center>  <form action="/posts" method ="post">
-            <label for="url" class="form__label">URL : </label>
-                <input type="text" class="form__input" name ='url' id="url" placeholder="Enter URL" required="" />
-          </br>
-        </br>
-                <button class="btn btn-primary"  role="button" >Check here</button>
-            </form></center>
-           
-    </div>
-    
-    
-</div>
-<br>
- 
-</div>
-
-
-    <!-- JavaScript -->
-    
-    <!-- JavaScript -->
-     
-</body>
-			
-			
-			
-			
-			
-			
-        </div>
-    </div>
-	</div>
-    <!-- Team End -->
-
-
-    <!-- Vendor Start -->
-    
-    
-
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light mt-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-           
-          
-        </div>
-    </div>
-    <div class="container-fluid text-white" style="background: #061429;">
-        <div class="container text-center">
-            <div class="row justify-content-end">
-                <div class="col-lg-8 col-md-6">
-                    <div class="d-flex align-items-center justify-content-center" style="height: 75px;">
-                        <p class="mb-0"> <a class="text-white border-bottom" href="#">
-						
-						<!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-						 <a class="text-white border-bottom" href="https://htmlcodex.com"></a></p>
+            <div class="prediction-card animate-fadeInUp" style="animation-delay: 0.2s;">
+                <form action="/posts" method="post" class="grid gap-4">
+                    <div class="form-group">
+                        <label for="url" class="form-label">
+                            <i class="fas fa-link" style="margin-right: 0.5rem;"></i>
+                            Website URL
+                        </label>
+                        <input 
+                            type="text" 
+                            class="url-input" 
+                            name="url" 
+                            id="url" 
+                            placeholder="https://example.com" 
+                            required
+                        />
                     </div>
-                </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="check-btn">
+                            <i class="fas fa-search" style="margin-right: 0.5rem;"></i>
+                            Check URL Safety
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
-    <!-- Footer End -->
+    </section>
 
+    <!-- Features Section -->
+    <section class="container" style="padding: 5rem 2rem;">
+        <div class="section-title">
+            <h2>How It Works</h2>
+            <p>Advanced machine learning algorithms analyze URLs for potential threats</p>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-5">
+            <div class="card text-center animate-fadeInUp" style="animation-delay: 0.1s;">
+                <div style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>AI Analysis</h3>
+                <p>Machine learning models trained on millions of URLs to detect phishing patterns</p>
+            </div>
+            
+            <div class="card text-center animate-fadeInUp" style="animation-delay: 0.2s;">
+                <div style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Real-time Protection</h3>
+                <p>Instant analysis with up-to-date threat intelligence and security databases</p>
+            </div>
+            
+            <div class="card text-center animate-fadeInUp" style="animation-delay: 0.3s;">
+                <div style="font-size: 3rem; color: #6366f1; margin-bottom: 1rem;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>High Accuracy</h3>
+                <p>Advanced algorithms provide reliable detection with minimal false positives</p>
+            </div>
+        </div>
+    </section>
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <!-- Footer -->
+    <footer style="background: var(--secondary); padding: 3rem 0; margin-top: 5rem; border-top: 1px solid var(--border);">
+        <div class="container text-center">
+            <p style="color: var(--text-muted);">
+                © 2024 Phishing Detection System. Powered by Machine Learning.
+            </p>
+        </div>
+    </footer>
 
+    <!-- JavaScript -->
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../static/lib/wow/wow.min.js"></script>
-    <script src="../static/lib/easing/easing.min.js"></script>
-    <script src="../static/lib/waypoints/waypoints.min.js"></script>
-    <script src="../static/lib/counterup/counterup.min.js"></script>
-    <script src="../static/lib/owlcarousel/owl.carousel.min.js"></script>
+        // Form validation and animation
+        const form = document.querySelector('form');
+        const urlInput = document.getElementById('url');
+        const submitBtn = document.querySelector('.check-btn');
 
-    <!-- Template Javascript -->
-    <script src="../static/js/main.js"></script>
+        form.addEventListener('submit', function(e) {
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                e.preventDefault();
+                urlInput.style.borderColor = '#ef4444';
+                urlInput.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1)';
+                return;
+            }
+            
+            // Add loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>Analyzing...';
+            submitBtn.disabled = true;
+        });
+
+        // Reset input styling on focus
+        urlInput.addEventListener('focus', function() {
+            this.style.borderColor = '#6366f1';
+            this.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)';
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.animate-fadeInUp').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
 </body>
-
 </html>
